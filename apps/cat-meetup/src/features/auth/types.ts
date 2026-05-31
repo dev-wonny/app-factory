@@ -21,6 +21,10 @@ export type SignupFormValues = {
 
 export type SignupFieldErrors = Record<keyof SignupFormValues, string>;
 
+export type OnboardingFormValues = Omit<SignupFormValues, "email" | "password">;
+
+export type OnboardingFieldErrors = Record<keyof OnboardingFormValues, string>;
+
 export const genderOptions: Gender[] = ["남", "여", "기타"];
 
 export const regionOptions: RegionOption[] = [
@@ -47,6 +51,26 @@ export const emptySignupFieldErrors: SignupFieldErrors = {
   kakaoId: "",
   password: "",
   email: "",
+  gender: "",
+  birthDate: "",
+  regionCode: "",
+  bio: "",
+};
+
+export const initialOnboardingFormValues: OnboardingFormValues = {
+  name: "",
+  phone: "",
+  kakaoId: "",
+  gender: "남",
+  birthDate: "",
+  regionCode: "seoul-guro",
+  bio: "",
+};
+
+export const emptyOnboardingFieldErrors: OnboardingFieldErrors = {
+  name: "",
+  phone: "",
+  kakaoId: "",
   gender: "",
   birthDate: "",
   regionCode: "",

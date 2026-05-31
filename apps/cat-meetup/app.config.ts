@@ -33,7 +33,16 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       output: "single",
       favicon: "./src/assets/images/favicon.png",
     },
-    plugins: ["expo-router", "expo-font"],
+    plugins: [
+      "expo-router",
+      "expo-font",
+      [
+        "expo-web-browser",
+        {
+          experimentalLauncherActivity: false,
+        },
+      ],
+    ],
     experiments: {
       tsconfigPaths: true,
       typedRoutes: true,

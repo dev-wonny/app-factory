@@ -38,7 +38,7 @@ export async function signUpWithPhoneProfile(input: SignupFormValues) {
 
   if (!data.session) {
     throw new Error(
-      "Supabase 이메일 확인이 켜져 있습니다. 대시보드에서 Confirm email을 꺼주세요.",
+      "회원가입 설정이 이메일 인증 모드예요. Supabase에서 Confirm email을 꺼주세요.",
     );
   }
 

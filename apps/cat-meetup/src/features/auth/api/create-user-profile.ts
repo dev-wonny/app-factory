@@ -1,20 +1,27 @@
-import type { SignupFormValues } from "../types";
+import type { OnboardingFormValues, SignupFormValues } from "../types";
 
 import { supabase } from "@/lib/supabase";
-import { normalizePhone, toFriendlyAuthError } from "./shared";
+import { normalizeEmail, normalizePhone, toFriendlyAuthError } from "./shared";
 
 type CreateUserProfileInput = Pick<
-  SignupFormValues,
-  | "name"
-  | "phone"
-  | "kakaoId"
-  | "email"
-  | "gender"
-  | "birthDate"
-  | "regionCode"
-  | "bio"
+  SignupFormValues | OnboardingFormValues,
+  "name" | "phone" | "kakaoId" | "gender" | "birthDate" | "regionCode" | "bio"
 > & {
   authUserId: string;
+  email: string;
+};
+
+export type UserProfileRecord = {
+  auth_user_id: string;
+  bio: string | null;
+  birth_date: string | null;
+  email: string | null;
+  gender: "남" | "여" | "기타" | null;
+  id: string;
+  kakao_id: string | null;
+  name: string;
+  phone: string;
+  region_code: string | null;
 };
 
 async function ensureUniqueValue(params: {
@@ -44,6 +51,7 @@ export async function assertUserProfileAvailable(
   input: Pick<SignupFormValues, "phone" | "email" | "kakaoId">,
 ) {
   const normalizedPhone = normalizePhone(input.phone);
+  const normalizedEmail = normalizeEmail(input.email);
 
   await ensureUniqueValue({
     column: "phone",
@@ -53,7 +61,7 @@ export async function assertUserProfileAvailable(
 
   await ensureUniqueValue({
     column: "email",
-    value: input.email.trim(),
+    value: normalizedEmail,
     message: "이미 사용 중인 이메일입니다.",
   });
 
@@ -71,14 +79,16 @@ export async function createUserProfile(input: CreateUserProfileInput) {
       auth_user_id: input.authUserId,
       name: input.name.trim(),
       phone: normalizePhone(input.phone),
-      kakao_id: input.kakaoId.trim(),
-      email: input.email.trim(),
+      kakao_id: input.kakaoId.trim() || null,
+      email: normalizeEmail(input.email),
       gender: input.gender,
       birth_date: input.birthDate,
       region_code: input.regionCode,
       bio: input.bio.trim(),
     })
-    .select("id, auth_user_id, name, phone, email, region_code")
+    .select(
+      "id, auth_user_id, name, phone, kakao_id, email, gender, birth_date, region_code, bio",
+    )
     .single();
 
   if (error) {
@@ -86,4 +96,21 @@ export async function createUserProfile(input: CreateUserProfileInput) {
   }
 
   return data;
+}
+
+export async function getUserProfileByAuthUserId(authUserId: string) {
+  const { data, error } = await supabase
+    .from("users")
+    .select(
+      "id, auth_user_id, name, phone, kakao_id, email, gender, birth_date, region_code, bio",
+    )
+    .eq("auth_user_id", authUserId)
+    .is("deleted_at", null)
+    .maybeSingle<UserProfileRecord>();
+
+  if (error) {
+    throw new Error(toFriendlyAuthError(error.message));
+  }
+
+  return data ?? null;
 }

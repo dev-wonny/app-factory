@@ -2,8 +2,8 @@ import { Link } from "expo-router";
 import { ScrollView, Text, View } from "react-native";
 
 const entryMenus = [
-  { href: "/(auth)/login", label: "🔑 로그인" },
-  { href: "/(auth)/signup", label: "1) 사람 회원가입" },
+  { href: "/(auth)/login", label: "🔑 Google 로그인" },
+  { href: "/(auth)/signup", label: "1) 기본 프로필 완성" },
   { href: "/(cat)/register", label: "2) 동물 카드 등록" },
   { href: "/(posts)/list", label: "3) 매칭 게시물 목록" },
   { href: "/(posts)/applied", label: "4) 신청한 게시물 목록" },
@@ -19,8 +19,8 @@ export default function HomeScreen() {
           냥냥모임 기본 골격
         </Text>
         <Text style={{ color: "#475569" }}>
-          신규 가입자, 게시물 작성자, 신청자 시나리오를 바로 연결한 라우트
-          시작점입니다.
+          Google 로그인 후 전화번호가 포함된 프로필 완성을 끝내야 주요 라우트에
+          진입할 수 있습니다.
         </Text>
       </View>
 

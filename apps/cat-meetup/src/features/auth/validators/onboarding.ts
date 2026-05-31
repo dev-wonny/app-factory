@@ -1,12 +1,10 @@
 import {
-  emptySignupFieldErrors,
-  type SignupFieldErrors,
-  type SignupFormValues,
+  emptyOnboardingFieldErrors,
+  type OnboardingFieldErrors,
+  type OnboardingFormValues,
 } from "../types";
 
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const birthDatePattern = /^\d{4}-\d{2}-\d{2}$/;
-const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
 
 function normalizeBirthDate(value: string) {
   const digits = value.replace(/[^0-9]/g, "").slice(0, 8);
@@ -33,8 +31,8 @@ function isValidBirthDate(value: string) {
   );
 }
 
-export function validateSignUpForm(values: SignupFormValues) {
-  const errors: SignupFieldErrors = { ...emptySignupFieldErrors };
+export function validateOnboardingForm(values: OnboardingFormValues) {
+  const errors: OnboardingFieldErrors = { ...emptyOnboardingFieldErrors };
   let isValid = true;
 
   const phoneDigits = values.phone.replace(/[^0-9]/g, "");
@@ -50,27 +48,6 @@ export function validateSignUpForm(values: SignupFormValues) {
     isValid = false;
   } else if (phoneDigits.length < 10 || phoneDigits.length > 11) {
     errors.phone = "올바른 핸드폰번호를 입력해주세요.";
-    isValid = false;
-  }
-
-  if (!values.kakaoId.trim()) {
-    errors.kakaoId = "카카오톡 아이디를 입력해주세요.";
-    isValid = false;
-  }
-
-  if (!values.email.trim()) {
-    errors.email = "이메일을 입력해주세요.";
-    isValid = false;
-  } else if (!emailPattern.test(values.email.trim())) {
-    errors.email = "올바른 이메일 형식으로 입력해주세요.";
-    isValid = false;
-  }
-
-  if (!values.password) {
-    errors.password = "비밀번호를 입력해주세요.";
-    isValid = false;
-  } else if (!passwordPattern.test(values.password)) {
-    errors.password = "비밀번호는 영문과 숫자를 포함해 8자 이상이어야 합니다.";
     isValid = false;
   }
 

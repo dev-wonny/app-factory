@@ -19,7 +19,10 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     storage,
     autoRefreshToken: true,
     persistSession: true,
-    detectSessionInUrl: false,
+    // Web OAuth returns to localhost with auth params in the URL, so let the
+    // client complete the session automatically there. Native handles the code
+    // exchange manually after the deep link callback.
+    detectSessionInUrl: Platform.OS === "web",
   },
 });
 
